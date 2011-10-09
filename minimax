@@ -12,6 +12,7 @@
 %			   | | | | | | | | |
 %				 4 3 2 7 1 4 3 5 3
 
+
 branch(a,b).
 branch(a,c).
 branch(a,d).
@@ -66,3 +67,36 @@ choice(Game,Move,Level):-NewLev is Level-1,setof([MoveScore,Move],evalMove(Game,
 												write(List),minM(List,[_,Move]).
 
 %This algorithm may prove wrong when used with a odd heuristic (in this case we can only test 2).
+
+---------------------------------------------------------------------------------------------------------------
+
+%Modelisation of a game state and of an eval function for a game :
+Game = [00,00,00,00,00] %no one has played yet
+
+%Regarde si la grille S peut être le tour suivant de la grille L avec l’ajout de P (rond ou croix). C est le 
+%compteur qui correspond à la dernière pièce ajoutée (va de 1 à 5)
+
+% Fonction outils
+
+% nieme(N,X,Y) est vrai si Y est le nième element de la liste X
+nieme(1, [H|_], H).
+nieme(N, [_|T], Z) :-
+N > 0,
+N1 is N - 1,
+nieme(N1, T, Z).
+
+% On encapsule nieme pour corriger le fait que C soit < 0
+niemec(N,X,Y):-N == 0,nieme(5,X,Y).
+niemec(N,X,Y):-N == -1,nieme(4,X,Y).
+niemec(N,X,Y):-N == -2,nieme(3,X,Y).
+niemec(N,X,Y):-N == -3,nieme(2,X,Y).
+niemec(N,X,Y):-(N > 0),nieme(N,X,Y).
+
+% Jeux = [11,22,32,51,92].
+
+desc(L,S,P,C):-
+R1 is C - 1, niemec(R1,L,A1),niemec(R1,S,A1),
+R2 is C - 2, niemec(R2,L,A2),niemec(R2,S,A2),
+R3 is C - 3, niemec(R3,L,A3),niemec(R3,S,A3),
+R4 is C - 4, niemec(R4,L,A4),niemec(R4,S,A4),
+niemec(C,S,V), (V > 0), (V < 100), P is V mod 10.
