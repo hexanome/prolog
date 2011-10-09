@@ -118,8 +118,8 @@ eval(Score,Game):-myTwos(Game,MT),hisTwos(Game,HT),myOnes(Game,MO),hisOnes(Game,
 
 %count(Game,NT,Player,N) is true when NT is the number of lines/columns/diags where player "Player" has N marks
 count(Game,NT,Player,N):-findall(X,line(Game,Player,X,N),NbL),length(NbL,L),
-											findall(Y,columns(Game,Player,Y,N),NbC),length(NbC,C),
-											findall(Z,diags(Game,Player,Z,N),NbD),length(NbD,D),
+											findall(Y,column(Game,Player,Y,N),NbC),length(NbC,C),
+											findall(Z,diag(Game,Player,Z,N),NbD),length(NbD,D),
 											NT is L+C+D.
 %line(Game,Player,X,N) is true if the player has N marks on line X
 %same for column and diag
