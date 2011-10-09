@@ -68,16 +68,14 @@ choice(Game,Move,Level):-NewLev is Level-1,setof([MoveScore,Move],evalMove(Game,
 
 %This algorithm may prove wrong when used with a odd heuristic (in this case we can only test 2).
 
----------------------------------------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------------------------------------
 
 %Modelisation of a game state and of an eval function for a game :
-Game = [00,00,00,00,00] %no one has played yet
 
 %Regarde si la grille S peut être le tour suivant de la grille L avec l’ajout de P (rond ou croix). C est le 
 %compteur qui correspond à la dernière pièce ajoutée (va de 1 à 5)
 
 % Fonction outils
-
 % nieme(N,X,Y) est vrai si Y est le nième element de la liste X
 nieme(1, [H|_], H).
 nieme(N, [_|T], Z) :-
@@ -92,7 +90,15 @@ niemec(N,X,Y):-N == -2,nieme(3,X,Y).
 niemec(N,X,Y):-N == -3,nieme(2,X,Y).
 niemec(N,X,Y):-(N > 0),nieme(N,X,Y).
 
-% Jeux = [11,22,32,51,92].
+%Same as nieme :
+rang(0,X,[X|_]).
+rang(N,X,[_|LB]) :- var(N),rang(M,X,LB),N is M+1.
+rang(N,X,[_|LB]) :- nonvar(N),M is N-1,rang(M,X,LB).
+%Negativ rank for desc 
+rangc(N,Y,X):-N=<0,-N=<5,M is 5+N,rang(M,Y,X).
+rangc(N,Y,X):-N>0,rang(N,Y,X).
+
+%Jeux = [11,22,32,51,92].
 
 desc(L,S,P,C):-
 R1 is C - 1, niemec(R1,L,A1),niemec(R1,S,A1),
@@ -100,3 +106,21 @@ R2 is C - 2, niemec(R2,L,A2),niemec(R2,S,A2),
 R3 is C - 3, niemec(R3,L,A3),niemec(R3,S,A3),
 R4 is C - 4, niemec(R4,L,A4),niemec(R4,S,A4),
 niemec(C,S,V), (V > 0), (V < 100), P is V mod 10.
+
+%Evaluation function:
+%Let 0 stand for an unused area
+%Let 1 stand for the computer symbol
+%Let 2 stand for the user symbol
+
+eval(Score,Game):-win(Game),Score is 100,!.		%If "Game" is a winning move, Score is maximum
+eval(Score,Game):-lose(Game),Score is -100,!.	%If "Game" is a losing move, Score is minimum
+eval(Score,Game):-myTwos(Game,MT),hisTwos(Game,HT),myOnes(Game,MO),hisOnes(Game,HO),Score is MT*10+MO-HT*10-HO.
+
+%count(Game,NT,Player,N) is true when NT is the number of lines/columns/diags where player "Player" has N marks
+count(Game,NT,Player,N):-findall(X,line(Game,Player,X,N),NbL),length(NbL,L),
+											findall(Y,columns(Game,Player,Y,N),NbC),length(NbC,C),
+											findall(Z,diags(Game,Player,Z,N),NbD),length(NbD,D),
+											NT is L+C+D.
+%line(Game,Player,X,N) is true if the player has N marks on line X
+%same for column and diag
+line(Game,Player,X,N):-
