@@ -68,7 +68,7 @@ choice(Game,Move,Level):-NewLev is Level-1,setof([MoveScore,Move],evalMove(Game,
 
 %This algorithm may prove wrong when used with a odd heuristic (in this case we can only test 2).
 
-%-------------------------------------------------------------------------------------------------------------
+%----------------------------------------------------------------------------------------
 
 %Modelisation of a game state and of an eval function for a game :
 
@@ -117,10 +117,31 @@ eval(Score,Game):-lose(Game),Score is -100,!.	%If "Game" is a losing move, Score
 eval(Score,Game):-myTwos(Game,MT),hisTwos(Game,HT),myOnes(Game,MO),hisOnes(Game,HO),Score is MT*10+MO-HT*10-HO.
 
 %count(Game,NT,Player,N) is true when NT is the number of lines/columns/diags where player "Player" has N marks
-count(Game,NT,Player,N):-findall(X,line(Game,Player,X,N),NbL),length(NbL,L),
+count(Game,NT,Player,N):- findall(X,line(Game,Player,X,N),NbL),length(NbL,L),
 											findall(Y,column(Game,Player,Y,N),NbC),length(NbC,C),
 											findall(Z,diag(Game,Player,Z,N),NbD),length(NbD,D),
 											NT is L+C+D.
 %line(Game,Player,X,N) is true if the player has N marks on line X
 %same for column and diag
-line(Game,Player,X,N):-
+line([],_,_,N):-N is 0.
+line([First|Game],Player,X,N):-between(0,2,X),A is First mod 10, B is First//30,
+															A==Player, B==X, line(Game,Player,X,M),N is M+1.
+line([First|Game],Player,X,N):-between(0,2,X),A is First mod 10,not(A==Player),line(Game,Player,X,N).
+line([First|Game],Player,X,N):-between(0,2,X),B is First//30,not(B==X),line(Game,Player,X,N).
+
+column([],_,_,N):-N is 0.
+column([First|Game],Player,Y,N):-between(0,2,Y),A is First mod 10, B is (First//10) mod 3,
+															A==Player, B==Y, column(Game,Player,Y,M),N is M+1.
+column([First|Game],Player,Y,N):-between(0,2,Y),A is First mod 10,not(A==Player),column(Game,Player,Y,N).
+column([First|Game],Player,Y,N):-between(0,2,Y),B is (First//10) mod 3,not(B==Y),column(Game,Player,Y,N).
+
+diag([],_,_,N):-N is 0.
+diag([First|Game],Player,Z,N):-Z = 0, A is First mod 10, B is First//3 , C is First mod 3,
+															A==Player, B==C, column(Game,Player,Z,M), N is M+1.
+diag([First|Game],Player,Z,N):-Z = 0, A is First mod 10, not(A==Player), diag(Game,Player,Z,N).
+diag([First|Game],Player,Z,N):-Z = 0, B is First//3, C is First mod 3, not(B==C), diag(Game,Player,Z,N).
+
+diag([First|Game],Player,Z,N):-Z = 1, A is First mod 10, B is First//3 , C is First mod 3,
+															A==Player, B==(2-C), column(Game,Player,Z,M), N is M+1.
+diag([First|Game],Player,Z,N):-Z = 1, A is First mod 10, not(A==Player), diag(Game,Player,Z,N).
+diag([First|Game],Player,Z,N):-Z = 1, B is First//3, C is First mod 3, not(B==(2-C)), diag(Game,Player,Z,N).
