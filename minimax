@@ -76,12 +76,17 @@ choice(Game,Move,Level):-NewLev is Level-1,setof([MoveScore,Move],evalMove(Game,
 %compteur qui correspond à la dernière pièce ajoutée (va de 1 à 5)
 
 % Fonction outils
+
 % nieme(N,X,Y) est vrai si Y est le nième element de la liste X
 nieme(1, [H|_], H).
 nieme(N, [_|T], Z) :-
 N > 0,
 N1 is N - 1,
 nieme(N1, T, Z).
+%rang(N,Y,X) est vrai si N est le rang de l'élément X dans la liste Y
+rang(0,X,[X|_]).
+rang(N,X,[_|LB]) :- var(N),rang(M,X,LB),N is M+1.
+rang(N,X,[_|LB]) :- nonvar(N),M is N-1,rang(M,X,LB).
 
 % On encapsule nieme pour corriger le fait que C soit < 0
 niemec(N,X,Y):-N == 0,nieme(5,X,Y).
@@ -89,23 +94,28 @@ niemec(N,X,Y):-N == -1,nieme(4,X,Y).
 niemec(N,X,Y):-N == -2,nieme(3,X,Y).
 niemec(N,X,Y):-N == -3,nieme(2,X,Y).
 niemec(N,X,Y):-(N > 0),nieme(N,X,Y).
-
-%Same as nieme :
-rang(0,X,[X|_]).
-rang(N,X,[_|LB]) :- var(N),rang(M,X,LB),N is M+1.
-rang(N,X,[_|LB]) :- nonvar(N),M is N-1,rang(M,X,LB).
-%Negativ rank for desc 
+% pour rang on aura :
 rangc(N,Y,X):-N=<0,-N=<5,M is 5+N,rang(M,Y,X).
 rangc(N,Y,X):-N>0,rang(N,Y,X).
+% Jeux = [11,22,32,51,92].
 
-%Jeux = [11,22,32,51,92].
+%desc([L1,L2,L3,L4,L5,LP,LC],[S1,S2,S3,S4,S5,SP,SC]):-
+%SC is (LC+1) mod 5,
+%(LP == 2, SP is 1);(LP == 1, SP is 2),
+%R1 is C - 1, niemec(R1,[L1,L2,L3,L4,L5],A1),niemec(R1,[S1,S2,S3,S4,S5],A1),
+%R2 is C - 2, niemec(R2,[L1,L2,L3,L4,L5],A2),niemec(R2,[S1,S2,S3,S4,S5],A2),
+%R3 is C - 3, niemec(R3,[L1,L2,L3,L4,L5],A3),niemec(R3,[S1,S2,S3,S4,S5],A3),
+%R4 is C - 4, niemec(R4,[L1,L2,L3,L4,L5],A4),niemec(R4,[S1,S2,S3,S4,S5],A4),
+%niemec(LC,[S1,S2,S3,S4,S5],V), between(0,90,V), SP is V mod 10.
 
-desc(L,S,P,C):-
-R1 is C - 1, niemec(R1,L,A1),niemec(R1,S,A1),
-R2 is C - 2, niemec(R2,L,A2),niemec(R2,S,A2),
-R3 is C - 3, niemec(R3,L,A3),niemec(R3,S,A3),
-R4 is C - 4, niemec(R4,L,A4),niemec(R4,S,A4),
-niemec(C,S,V), (V > 0), (V < 100), P is V mod 10.
+desc([L1,L2,L3,L4,L5,P,C],[S1,S2,S3,S4,S5,SP,SC]):-
+SC is (C+1) mod 5,
+((P == 2, SP is 1);(P == 1, SP is 2)),
+R1 is C - 1, niemec(R1,[L1,L2,L3,L4,L5],A1),niemec(R1,[S1,S2,S3,S4,S5],A1),
+R2 is C - 2, niemec(R2,[L1,L2,L3,L4,L5],A2),niemec(R2,[S1,S2,S3,S4,S5],A2),
+R3 is C - 3, niemec(R3,[L1,L2,L3,L4,L5],A3),niemec(R3,[S1,S2,S3,S4,S5],A3),
+R4 is C - 4, niemec(R4,[L1,L2,L3,L4,L5],A4),niemec(R4,[S1,S2,S3,S4,S5],A4),
+niemec(C,[S1,S2,S3,S4,S5],V), between(0,90,V), P is V mod 10.
 
 %Evaluation function:
 %Let 0 stand for an unused area
