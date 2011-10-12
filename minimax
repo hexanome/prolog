@@ -136,12 +136,12 @@ column([First|Game],Player,Y,N):-between(0,2,Y),A is First mod 10,not(A==Player)
 column([First|Game],Player,Y,N):-between(0,2,Y),B is (First//10) mod 3,not(B==Y),column(Game,Player,Y,N).
 
 diag([],_,_,N):-N is 0.
-diag([First|Game],Player,Z,N):-Z = 0, A is First mod 10, B is First//3 , C is First mod 3,
+diag([First|Game],Player,Z,N):-Z = 0, A is First mod 10, B is First//30 , C is (First//10) mod 3,
 															A==Player, B==C, column(Game,Player,Z,M), N is M+1.
 diag([First|Game],Player,Z,N):-Z = 0, A is First mod 10, not(A==Player), diag(Game,Player,Z,N).
 diag([First|Game],Player,Z,N):-Z = 0, B is First//3, C is First mod 3, not(B==C), diag(Game,Player,Z,N).
 
-diag([First|Game],Player,Z,N):-Z = 1, A is First mod 10, B is First//3 , C is First mod 3,
+diag([First|Game],Player,Z,N):-Z = 1, A is First mod 10, B is First//30 , C is (First//10) mod 3,
 															A==Player, B==(2-C), column(Game,Player,Z,M), N is M+1.
 diag([First|Game],Player,Z,N):-Z = 1, A is First mod 10, not(A==Player), diag(Game,Player,Z,N).
 diag([First|Game],Player,Z,N):-Z = 1, B is First//3, C is First mod 3, not(B==(2-C)), diag(Game,Player,Z,N).
