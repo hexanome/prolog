@@ -51,18 +51,19 @@ minM([[A,B]|C],[RA,RB]):-minM(C,S),minM([A,B],S,[RA,RB]).
 %By encapsulating branch(),minimax() with evalChild(), we can use setof to create list of scores of all 
 %children verifying minmax(). We will then be able to find the minimum score amongst it, using the rule min()
 %previously defined. 
-evalChild(Node,Score,Level):-branch(Node,Child),minimax(Child,Score,Level).
+evalChild(Node,Score,Level):-desc(Node,Child),minimax(Child,Score,Level).
 
 %Once the max recursion level is reached we evaluate the the leaves.
-minimax(Leaf,Score,0):-val(Score,Leaf).
+minimax([A1,A2,A3,A4,A5,_,_],Score,0):-eval(Score,[A1,A2,A3,A4,A5]).
+
 %While the recursion level has not been reached, keep on building the tree. The min/max alternance is acheived
-%by switching the Score sign at each iteration and always calculating the minimum (Thanx wikipedia).
-minimax(Node,Score,Level):-NewLev is Level-1,setof(A,evalChild(Node,A,NewLev),ScoreList),
+%by switching the Score sign at each iteration and always calculating the minimum.
+minimax(Node,Score,Level):-Level>0,NewLev is Level-1,setof(A,evalChild(Node,A,NewLev),ScoreList),
 													min(ScoreList,NewScore),Score is -NewScore.
 
 %First predicate to evaluate, this is cut from the algorithm body to allow us to get the best move, and not
 %its score as we would have obtained by calling directly minimax().
-evalMove(Game,Move,MoveScore,Level):-branch(Game,Move),minimax(Move,MoveScore,Level).
+evalMove(Game,Move,MoveScore,Level):-desc(Game,Move),minimax(Move,MoveScore,Level).
 choice(Game,Move,Level):-NewLev is Level-1,setof([MoveScore,Move],evalMove(Game,Move,MoveScore,NewLev),List),
 												write(List),minM(List,[_,Move]).
 
