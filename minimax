@@ -109,13 +109,13 @@ rangc(N,Y,X):-N>0,rang(N,Y,X).
 %niemec(C,[S1,S2,S3,S4,S5],V), between(0,90,V), SP is V mod 10.
 
 desc([L1,L2,L3,L4,L5,P,C],[S1,S2,S3,S4,S5,SP,SC]):-
-SC is (C+1) mod 5,
+SC is (C mod 5)+1,
 ((P == 2, SP is 1);(P == 1, SP is 2)),
-R1 is C - 1, niemec(R1,[L1,L2,L3,L4,L5],A1),niemec(R1,[S1,S2,S3,S4,S5],A1),
-R2 is C - 2, niemec(R2,[L1,L2,L3,L4,L5],A2),niemec(R2,[S1,S2,S3,S4,S5],A2),
-R3 is C - 3, niemec(R3,[L1,L2,L3,L4,L5],A3),niemec(R3,[S1,S2,S3,S4,S5],A3),
-R4 is C - 4, niemec(R4,[L1,L2,L3,L4,L5],A4),niemec(R4,[S1,S2,S3,S4,S5],A4),
-niemec(C,[S1,S2,S3,S4,S5],V), between(0,90,V), P is V mod 10,
+R1 is C - 1, niemec(R1,[L1,L2,L3,L4,L5],A1),!,niemec(R1,[S1,S2,S3,S4,S5],A1),!,
+R2 is C - 2, niemec(R2,[L1,L2,L3,L4,L5],A2),!,niemec(R2,[S1,S2,S3,S4,S5],A2),!,
+R3 is C - 3, niemec(R3,[L1,L2,L3,L4,L5],A3),!,niemec(R3,[S1,S2,S3,S4,S5],A3),!,
+R4 is C - 4, niemec(R4,[L1,L2,L3,L4,L5],A4),!,niemec(R4,[S1,S2,S3,S4,S5],A4),!,
+nieme(C,[S1,S2,S3,S4,S5],V),!, between(0,90,V), P is V mod 10,
 ((S1 == 0,V1 is 100);(S1 > 0,V1 is S1 // 10)),
 ((S2 == 0,V2 is 100);(S2 > 0,V2 is S2 // 10)),
 ((S3 == 0,V3 is 100);(S3 > 0,V3 is S3 // 10)),
@@ -136,7 +136,7 @@ eval(Score,Game):-win(Game),Score is 100,!.		%If "Game" is a winning move, Score
 eval(Score,Game):-lose(Game),Score is -100,!.	%If "Game" is a losing move, Score is minimum
 eval(Score,Game):-count(Game,MT,1,2),count(Game,HT,2,2),Score is MT*10-HT*10.
 
-win(Game):-count(Game,NT,1,3),write(NT),NT<0.
+win(Game):-count(Game,NT,1,3),NT>0.
 lose(Game):-count(Game,NT,2,3),NT>0.
 
 %count(Game,NT,Player,N) is true when NT is the number of lines/columns/diags where player "Player" has N marks
