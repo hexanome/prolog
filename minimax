@@ -169,3 +169,51 @@ diag([First|Game],Player,Z,N):-Z = 1, A is First mod 10, B is First//30 , C is 2
 															A==Player, B==C, diag(Game,Player,Z,M), N is M+1.
 diag([First|Game],Player,Z,N):-Z = 1, A is First mod 10, not(A==Player), diag(Game,Player,Z,N).
 diag([First|Game],Player,Z,N):-Z = 1, B is First//3, C is First mod 3, not(B==C), diag(Game,Player,Z,N).
+
+%------------------------------------------Display function------------------------------------------
+
+piece(R,A):-R = 1, A = "X".
+piece(R,A):-R = 2, A = "O".
+
+position(Pos,V,A1,A2,A3,A4,A5,A6,A7,A8,A9):-
+((Pos = 0, A1 = V);
+(Pos = 1, A2 = V);
+(Pos = 2, A3 = V);
+(Pos = 3, A4 = V);
+(Pos = 4, A5 = V);
+(Pos = 5, A6 = V);
+(Pos = 6, A7 = V);
+(Pos = 7, A8 = V);
+(Pos = 8, A9 = V)),
+(A1 = " "; A1 = "X"; A1 = "O"),
+(A2 = " "; A2 = "X"; A2 = "O"),
+(A3 = " "; A3 = "X"; A3 = "O"),
+(A4 = " "; A4 = "X"; A4 = "O"),
+(A5 = " "; A5 = "X"; A5 = "O"),
+(A6 = " "; A6 = "X"; A6 = "O"),
+(A7 = " "; A7 = "X"; A7 = "O"),
+(A8 = " "; A8 = "X"; A8 = "O"),
+(A9 = " "; A9 = "X"; A9 = "O").
+
+affichage([L1,L2,L3,L4,L5,_,_]):-
+
+P1 is L1 // 10,
+P2 is L2 // 10,
+P3 is L3 // 10,
+P4 is L4 // 10,
+P5 is L5 // 10,
+
+R1 is L1 mod 10,
+R2 is L2 mod 10,
+R3 is L3 mod 10,
+R4 is L4 mod 10,
+R5 is L5 mod 10,
+
+piece(R1,Piece1), position(P1,Piece1,A1,A2,A3,A4,A5,A6,A7,A8,A9),
+piece(R2,Piece2), position(P2,Piece2,A1,A2,A3,A4,A5,A6,A7,A8,A9),
+piece(R3,Piece3), position(P3,Piece3,A1,A2,A3,A4,A5,A6,A7,A8,A9),
+piece(R4,Piece4), position(P4,Piece4,A1,A2,A3,A4,A5,A6,A7,A8,A9),
+piece(R5,Piece5), position(P5,Piece5,A1,A2,A3,A4,A5,A6,A7,A8,A9),
+
+put(A1), write(' '), put(A2), write(' '), put(A3), write('\r\n\r\n'), put(A4), write(' '), put(A5), write(' '),
+put(A6), write('\r\n\r\n'), put(A7), write(' '), put(A8), write(' '), put(A9).
