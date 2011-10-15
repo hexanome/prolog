@@ -115,7 +115,10 @@ R1 is C - 1, niemec(R1,[L1,L2,L3,L4,L5],A1),niemec(R1,[S1,S2,S3,S4,S5],A1),
 R2 is C - 2, niemec(R2,[L1,L2,L3,L4,L5],A2),niemec(R2,[S1,S2,S3,S4,S5],A2),
 R3 is C - 3, niemec(R3,[L1,L2,L3,L4,L5],A3),niemec(R3,[S1,S2,S3,S4,S5],A3),
 R4 is C - 4, niemec(R4,[L1,L2,L3,L4,L5],A4),niemec(R4,[S1,S2,S3,S4,S5],A4),
-niemec(C,[S1,S2,S3,S4,S5],V), between(0,90,V), P is V mod 10.
+niemec(C,[S1,S2,S3,S4,S5],V), between(0,90,V), P is V mod 10,
+V1 is S1 // 10, V2 is S2 // 10, V3 is S3 // 10, V4 is S4 // 10, V5 is S5 // 10, 
+not(V1 == V2), not(V1 == V3),not(V1 == V4), not(V1 == V5),not(V2 == V3),
+not(V2 == V4),not(V2 == V5), not(V3 == V4),not(V3 == V5), not(V4 == V5).
 
 %Evaluation function:
 %Let 0 stand for an unused area
