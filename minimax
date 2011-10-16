@@ -209,7 +209,7 @@ position(Pos,V,A1,A2,A3,A4,A5,A6,A7,A8,A9):-
 (A8 = " "; A8 = "X"; A8 = "O"),
 (A9 = " "; A9 = "X"; A9 = "O").
 
-affichage([L1,L2,L3,L4,L5,_,_]):-
+affichage([L1,L2,L3,L4,L5]):-
 
 P1 is L1 // 10,
 P2 is L2 // 10,
@@ -229,5 +229,5 @@ piece(R3,Piece3), position(P3,Piece3,A1,A2,A3,A4,A5,A6,A7,A8,A9),
 piece(R4,Piece4), position(P4,Piece4,A1,A2,A3,A4,A5,A6,A7,A8,A9),
 piece(R5,Piece5), position(P5,Piece5,A1,A2,A3,A4,A5,A6,A7,A8,A9),
 
-put(A1), write(' '), put(A2), write(' '), put(A3), write('\r\n\r\n'), put(A4), write(' '), put(A5), write(' '),
-put(A6), write('\r\n\r\n'), put(A7), write(' '), put(A8), write(' '), put(A9).
+put(A1), write('  '), put(A2), write('  '), put(A3), write('\r\n\r\n'), put(A4), write('  '), put(A5), write('  '),
+put(A6), write('\r\n\r\n'), put(A7), write('  '), put(A8), write('  '), put(A9).
