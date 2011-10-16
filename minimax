@@ -69,7 +69,7 @@ minimax(Leaf,Score,0):-eval(Score,Leaf).
 %While the recursion level has not been reached, keep on building the tree. The min/max alternance is acheived
 %by switching the Score sign at each iteration and always calculating the maximum.
 minimax(Node,Score,Level):-Level>0,NewLev is Level-1,setof(A,evalChild(Node,A,NewLev),ScoreList),
-													write('level '+Level+':'),write(ScoreList),put(10),min(ScoreList,NewScore),Score is -NewScore.
+													min(ScoreList,NewScore),Score is -NewScore.
 
 %First predicate to evaluate, this is cut from the algorithm body to allow us to get the best move, and not
 %its score as we would have obtained by calling directly minimax().
@@ -78,7 +78,7 @@ evalMove(Game,Move,MoveScore,Level):- %eval(GameScore,Game),
 																		desc(Game,Move),minimax(Move,MoveScore,Level).
 
 choice(Game,Move,Level):-NewLev is Level-1,setof([MoveScore,Move],evalMove(Game,Move,MoveScore,NewLev),List),
-												write(List),minM(List,[_,Move]).
+												write(List),put(10),minM(List,[Score,Move]),NewScore is Score,write(NewScore).
 
 %This algorithm may prove wrong when used with a odd heuristic (in this case we can only test 2).
 
@@ -122,7 +122,7 @@ rangc(N,Y,X):-N>0,rang(N,Y,X).
 %R4 is C - 4, niemec(R4,[L1,L2,L3,L4,L5],A4),niemec(R4,[S1,S2,S3,S4,S5],A4),
 %niemec(C,[S1,S2,S3,S4,S5],V), between(0,90,V), SP is V mod 10.
 
-desc(P,E):-eval(Score,P),(Score==100;Score==(-100)),E = P,write('LOL'),put(10),!. %There is no descendent for a game that's been won by any of the players.
+desc(P,E):-eval(Score,P),(Score==100;Score==(-100)),E = P,!. %There is no descendent for a game that's been won by any of the players.
 desc([L1,L2,L3,L4,L5,P,C],[S1,S2,S3,S4,S5,SP,SC]):-
 SC is (C mod 5)+1,
 ((P == 2, SP is 1);(P == 1, SP is 2)),
