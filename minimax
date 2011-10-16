@@ -223,11 +223,12 @@ R3 is L3 mod 10,
 R4 is L4 mod 10,
 R5 is L5 mod 10,
 
-piece(R1,Piece1), position(P1,Piece1,A1,A2,A3,A4,A5,A6,A7,A8,A9),
-piece(R2,Piece2), position(P2,Piece2,A1,A2,A3,A4,A5,A6,A7,A8,A9),
-piece(R3,Piece3), position(P3,Piece3,A1,A2,A3,A4,A5,A6,A7,A8,A9),
-piece(R4,Piece4), position(P4,Piece4,A1,A2,A3,A4,A5,A6,A7,A8,A9),
-piece(R5,Piece5), position(P5,Piece5,A1,A2,A3,A4,A5,A6,A7,A8,A9),
+((piece(R1,Piece1), position(P1,Piece1,A1,A2,A3,A4,A5,A6,A7,A8,A9));(L1 == 0)),
+((piece(R2,Piece2), position(P2,Piece2,A1,A2,A3,A4,A5,A6,A7,A8,A9));(L2 == 0)),
+((piece(R3,Piece3), position(P3,Piece3,A1,A2,A3,A4,A5,A6,A7,A8,A9));(L3 == 0)),
+((piece(R4,Piece4), position(P4,Piece4,A1,A2,A3,A4,A5,A6,A7,A8,A9));(L4 == 0)),
+((piece(R5,Piece5), position(P5,Piece5,A1,A2,A3,A4,A5,A6,A7,A8,A9));(L5 == 0)),
 
-put(A1), write('  '), put(A2), write('  '), put(A3), write('\r\n\r\n'), put(A4), write('  '), put(A5), write('  '),
-put(A6), write('\r\n\r\n'), put(A7), write('  '), put(A8), write('  '), put(A9),!.
+put(A1), write('|'), put(A2), write('|'), put(A3), write('\r\n- - -\r\n'), put(A4),
+write('|'), put(A5), write('|'),
+put(A6), write('\r\n- - -\r\n'), put(A7), write('|'), put(A8), write('|'), put(A9),!.
