@@ -1,16 +1,48 @@
 #!/usr/bin/swipl
-%Creation of a test-tree :
-%                a
-%								 |
-%								 3
-%             /  |  \
-%           b    c    d
-%					 |     |     |
-%					 2     1     3
-%         /|\   /|\   /|\
-%        e f g h i j k l m
-%			   | | | | | | | | |
-%				 4 3 2 7 1 4 3 5 3
+
+% Game interface
+
+selectPlayer(Player):-
+write('Select your player (x or o) : '),read(Pl),
+(
+  (
+    not(Pl == x),not(Pl == o),
+    write('Please enter x or o\r\n'),
+    selectPlayer(Player)
+  )
+  ;
+  (
+    ((Pl == x);(Pl == o)),(Player == Pl)
+  )
+)
+.
+
+playerTurn([GB1,GB2,GB3,GB4,GB5], [GA1,GA2,GA3,GA4,GA5], PositionBefore, PositionAfter, Player):-
+
+write('\r\nSelect a case : '),read(Ca),
+
+(((PositionBefore == 1),(GA1 is Player+((Ca-1)*10)));(not(PositionBefore == 1),(GA1 is GB1))),
+(((PositionBefore == 2),(GA2 is Player+((Ca-1)*10)));(not(PositionBefore == 2),(GA2 is GB2))),
+(((PositionBefore == 3),(GA3 is Player+((Ca-1)*10)));(not(PositionBefore == 3),(GA3 is GB3))),
+(((PositionBefore == 4),(GA4 is Player+((Ca-1)*10)));(not(PositionBefore == 4),(GA4 is GB4))),
+(((PositionBefore == 5),(GA5 is Player+((Ca-1)*10)));(not(PositionBefore == 5),(GA5 is GB5))),
+affichage([GA1,GA2,GA3,GA4,GA5,1,1]),
+
+write('\r\nComputer is playing'),
+PositionAfter is PositionBefore + 1,
+Player2 is (Player mod 2) + 1,
+choice([GA1,GA2,GA3,GA4,GA5,Player2,PositionAfter + 1],[S1,S2,S3,S4,S5,S6,S7],PositionAfter + 1),affichage([S1,S2,S3,S4,S5,S6,S7]),
+playerTurn([S1,S2,S3,S4,S5],[GA1,GA2,GA3,GA4,GA5],PositionBefore+2,PositionAfter+2,Player). % Erreur !!
+
+
+game:-write('Hello ! Welcome at Gomoku !\r\n'),
+(
+  (selectPlayer(x),write('You are player X'),(Player is 1));
+  (write('You are player O'),(Player is 2))
+),
+playerTurn([0,0,0,0,0],[GA1,GA2,GA3,GA4,GA5],1,2,Player)
+,!.
+
 
 
 branch(a,b).
@@ -56,12 +88,21 @@ maxM([A,_],[C,D],[C,D]):-A<C.
 maxM([[A,B]],[A,B]).
 maxM([[A,B]|C],[RA,RB]):-maxM(C,S),maxM([A,B],S,[RA,RB]).
 
+<<<<<<< HEAD
 %By encapsulating branch(),minimax() with evalChild(), we can use setof to create list of scores of all 
 %children verifying minmax(). We will then be able to find the minimum score amongst it, using the rule min()
 %previously defined. 
 evalChild(Node,Score,Level):-%eval(NodeScore,Node),
 														%((NodeScore==100;NodeScore==(-100)),Score is NodeScore,!);
 														desc(Node,Child),minimax(Child,Score,Level).
+=======
+%By encapsulating branch(),minimax() with evalChild(), we can use setof to create list of scores of all
+%children verifying minmax(). We will then be able to find the minimum score amongst it, using the rule min()
+%previously defined.
+evalChild(Node,Score,Level):-%eval(NodeScore,Node),
+%((NodeScore==100;NodeScore==(-100)),Score is NodeScore,!);
+desc(Node,Child),minimax(Child,Score,Level).
+>>>>>>> cf1dbe99952d1b34f9b8020ece0823bc67d21add
 
 %Once the maximum recursion level is reached we evaluate the the leaves.
 minimax(Leaf,Score,0):-eval(Score,Leaf).
@@ -69,16 +110,29 @@ minimax(Leaf,Score,0):-eval(Score,Leaf).
 %While the recursion level has not been reached, keep on building the tree. The min/max alternance is acheived
 %by switching the Score sign at each iteration and always calculating the maximum.
 minimax(Node,Score,Level):-Level>0,NewLev is Level-1,setof(A,evalChild(Node,A,NewLev),ScoreList),
+<<<<<<< HEAD
 													min(ScoreList,NewScore),Score is -NewScore.
+=======
+min(ScoreList,NewScore),Score is -NewScore.
+>>>>>>> cf1dbe99952d1b34f9b8020ece0823bc67d21add
 
 %First predicate to evaluate, this is cut from the algorithm body to allow us to get the best move, and not
 %its score as we would have obtained by calling directly minimax().
 evalMove(Game,Move,MoveScore,Level):- %eval(GameScore,Game),
+<<<<<<< HEAD
 																		%((GameScore==100;GameScore==(-100)),MoveScore is GameScore,Move = Game,!);
 																		desc(Game,Move),minimax(Move,MoveScore,Level).
 
 choice(Game,Move,Level):-NewLev is Level-1,setof([MoveScore,Move],evalMove(Game,Move,MoveScore,NewLev),List),
 												write(List),put(10),minM(List,[Score,Move]),NewScore is Score,write(NewScore).
+=======
+%((GameScore==100;GameScore==(-100)),MoveScore is GameScore,Move = Game,!);
+desc(Game,Move),minimax(Move,MoveScore,Level).
+
+choice(Game,Move,Level):-NewLev is Level-1,setof([MoveScore,Move],evalMove(Game,Move,MoveScore,NewLev),List),
+put(10),minM(List,[Score,Move]),NewScore is Score. % ,write(NewScore).
+% write(List),
+>>>>>>> cf1dbe99952d1b34f9b8020ece0823bc67d21add
 
 %This algorithm may prove wrong when used with a odd heuristic (in this case we can only test 2).
 
@@ -86,7 +140,7 @@ choice(Game,Move,Level):-NewLev is Level-1,setof([MoveScore,Move],evalMove(Game,
 
 %Modelisation of a game state and of an eval function for a game :
 
-%Regarde si la grille S peut être le tour suivant de la grille L avec l’ajout de P (rond ou croix). C est le 
+%Regarde si la grille S peut être le tour suivant de la grille L avec l’ajout de P (rond ou croix). C est le
 %compteur qui correspond à la dernière pièce ajoutée (va de 1 à 5)
 
 % Fonction outils
@@ -147,8 +201,13 @@ nieme(C,[S1,S2,S3,S4,S5],V),!, between(0,90,V), P is V mod 10,
 %Let 1 stand for the computer symbol
 %Let 2 stand for the user symbol
 
+<<<<<<< HEAD
 eval(Score,[A1,A2,A3,A4,A5,_,_]):-win([A1,A2,A3,A4,A5]),Score is 100,!.		%If "Game" is a winning move, Score is maximum
 eval(Score,[A1,A2,A3,A4,A5,_,_]):-lose([A1,A2,A3,A4,A5]),Score is -100,!.	%If "Game" is a losing move, Score is minimum
+=======
+eval(Score,[A1,A2,A3,A4,A5,_,_]):-win([A1,A2,A3,A4,A5]),Score is 100,!. %If "Game" is a winning move, Score is maximum
+eval(Score,[A1,A2,A3,A4,A5,_,_]):-lose([A1,A2,A3,A4,A5]),Score is -100,!. %If "Game" is a losing move, Score is minimum
+>>>>>>> cf1dbe99952d1b34f9b8020ece0823bc67d21add
 eval(Score,[A1,A2,A3,A4,A5,_,_]):-count([A1,A2,A3,A4,A5],MT,1,2),count([A1,A2,A3,A4,A5],HT,2,2),Score is MT*10-HT*10.
 
 win(Game):-count(Game,NT,1,3),NT>0.
@@ -156,31 +215,31 @@ lose(Game):-count(Game,NT,2,3),NT>0.
 
 %count(Game,NT,Player,N) is true when NT is the number of lines/columns/diags where player "Player" has N marks
 count(Game,NT,Player,N):- (setof(X,line(Game,Player,X,N),NbL),length(NbL,L);L is 0),!,
-											(setof(Y,column(Game,Player,Y,N),NbC),length(NbC,C);C is 0),!,
-											(setof(Z,diag(Game,Player,Z,N),NbD),length(NbD,D);D is 0),!,
-											NT is (L+C+D).
+(setof(Y,column(Game,Player,Y,N),NbC),length(NbC,C);C is 0),!,
+(setof(Z,diag(Game,Player,Z,N),NbD),length(NbD,D);D is 0),!,
+NT is (L+C+D).
 %line(Game,Player,X,N) is true if the player has N marks on line X
 %same for column and diag
 line([],_,_,N):-N is 0.
 line([First|Game],Player,X,N):-between(0,2,X),A is First mod 10, B is First//30,
-															A==Player, B==X, line(Game,Player,X,M),N is M+1.
+A==Player, B==X, line(Game,Player,X,M),N is M+1.
 line([First|Game],Player,X,N):-between(0,2,X),A is First mod 10,not(A==Player),line(Game,Player,X,N).
 line([First|Game],Player,X,N):-between(0,2,X),B is First//30,not(B==X),line(Game,Player,X,N).
 
 column([],_,_,N):-N is 0.
 column([First|Game],Player,Y,N):-between(0,2,Y),A is First mod 10, B is (First//10) mod 3,
-															A==Player, B==Y, column(Game,Player,Y,M),N is M+1.
+A==Player, B==Y, column(Game,Player,Y,M),N is M+1.
 column([First|Game],Player,Y,N):-between(0,2,Y),A is First mod 10,not(A==Player),column(Game,Player,Y,N).
 column([First|Game],Player,Y,N):-between(0,2,Y),B is (First//10) mod 3,not(B==Y),column(Game,Player,Y,N).
 
 diag([],_,_,N):-N is 0.
 diag([First|Game],Player,Z,N):-Z = 0, A is First mod 10, B is First//30 , C is (First//10) mod 3,
-															A==Player, B==C, diag(Game,Player,Z,M), N is M+1.
+A==Player, B==C, diag(Game,Player,Z,M), N is M+1.
 diag([First|Game],Player,Z,N):-Z = 0, A is First mod 10, not(A==Player), diag(Game,Player,Z,N).
 diag([First|Game],Player,Z,N):-Z = 0, B is First//3, C is First mod 3, not(B==C), diag(Game,Player,Z,N).
 
 diag([First|Game],Player,Z,N):-Z = 1, A is First mod 10, B is First//30 , C is 2-(First//10) mod 3,
-															A==Player, B==C, diag(Game,Player,Z,M), N is M+1.
+A==Player, B==C, diag(Game,Player,Z,M), N is M+1.
 diag([First|Game],Player,Z,N):-Z = 1, A is First mod 10, not(A==Player), diag(Game,Player,Z,N).
 diag([First|Game],Player,Z,N):-Z = 1, B is First//3, C is First mod 3, not(B==C), diag(Game,Player,Z,N).
 
@@ -231,4 +290,8 @@ R5 is L5 mod 10,
 
 put(A1), write('|'), put(A2), write('|'), put(A3), write('\r\n- - -\r\n'), put(A4),
 write('|'), put(A5), write('|'),
+<<<<<<< HEAD
 put(A6), write('\r\n- - -\r\n'), put(A7), write('|'), put(A8), write('|'), put(A9),!.
+=======
+put(A6), write('\r\n- - -\r\n'), put(A7), write('|'), put(A8), write('|'), put(A9).
+>>>>>>> cf1dbe99952d1b34f9b8020ece0823bc67d21add
