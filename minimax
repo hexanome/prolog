@@ -30,9 +30,14 @@ affichage([GA1,GA2,GA3,GA4,GA5,1,1]),
 
 write('\r\nComputer is playing'),
 PositionAfter is PositionBefore + 1,
+((PositionAfter < 6);(PositionAfter is 1)),
 Player2 is (Player mod 2) + 1,
-choice([GA1,GA2,GA3,GA4,GA5,Player2,PositionAfter + 1],[S1,S2,S3,S4,S5,S6,S7],PositionAfter + 1),affichage([S1,S2,S3,S4,S5,S6,S7]),
-playerTurn([S1,S2,S3,S4,S5],[GA1,GA2,GA3,GA4,GA5],PositionBefore+2,PositionAfter+2,Player). % Erreur !!
+choice([GA1,GA2,GA3,GA4,GA5,Player2,PositionAfter + 2],[S1,S2,S3,S4,S5,S6,S7],PositionAfter + 2),affichage([S1,S2,S3,S4,S5,S6,S7]), % erreur sur PositionAfter + 2
+NewPositionBefore is PositionBefore + 1,
+NewPositionAfter is PositionAfter + 1,
+((NewPositionBefore < 6);(NewPositionBefore is 1)),
+((NewPositionAfter < 6);(NewPositionAfter is 1)),
+playerTurn([S1,S2,S3,S4,S5],[G1,G2,G3,G4,G5],NewPositionBefore,NewPositionAfter,Player).
 
 
 game:-write('Hello ! Welcome at Gomoku !\r\n'),
@@ -63,9 +68,9 @@ maxM([A,_],[C,D],[C,D]):-A<C.
 maxM([[A,B]],[A,B]).
 maxM([[A,B]|C],[RA,RB]):-maxM(C,S),maxM([A,B],S,[RA,RB]).
 
-%By encapsulating branch(),minimax() with evalChild(), we can use setof to create list of scores of all 
+%By encapsulating branch(),minimax() with evalChild(), we can use setof to create list of scores of all
 %children verifying minmax(). We will then be able to find the minimum score amongst it, using the rule min()
-%previously defined. 
+%previously defined.
 evalChild(Node,Score,Level):-desc(Node,Child),minimax(Child,Score,Level).
 
 %Once the maximum recursion level is reached we evaluate the the leaves.
@@ -74,14 +79,16 @@ minimax(Leaf,Score,0):-eval(Score,Leaf).
 %While the recursion level has not been reached, keep on building the tree. The min/max alternance is acheived
 %by switching the Score sign at each iteration and always calculating the maximum.
 minimax(Node,Score,Level):-Level>0,NewLev is Level-1,setof(A,evalChild(Node,A,NewLev),ScoreList),
-													min(ScoreList,NewScore),Score is -NewScore.
+min(ScoreList,NewScore),Score is -NewScore.
 
 %First predicate to evaluate, this is cut from the algorithm body to allow us to get the best move, and not
 %its score as we would have obtained by calling directly minimax().
 evalMove(Game,Move,MoveScore,Level):-desc(Game,Move),minimax(Move,MoveScore,Level).
 
 choice(Game,Move,Level):-NewLev is Level-1,setof([MoveScore,Move],evalMove(Game,Move,MoveScore,NewLev),List),
-												write(List),put(10),minM(List,[Score,Move]),NewScore is Score,write(NewScore).
+%write(List),
+put(10),minM(List,[Score,Move]),NewScore is Score.
+%write(NewScore).
 
 %This algorithm may prove wrong when used with a odd heuristic (in this case we can only test 2).
 
@@ -150,8 +157,8 @@ nieme(C,[S1,S2,S3,S4,S5],V),!, between(0,90,V), P is V mod 10,
 %Let 1 stand for the computer symbol
 %Let 2 stand for the user symbol
 
-eval(Score,[A1,A2,A3,A4,A5,_,_]):-win([A1,A2,A3,A4,A5]),Score is 100,!.		%If "Game" is a winning move, Score is maximum
-eval(Score,[A1,A2,A3,A4,A5,_,_]):-lose([A1,A2,A3,A4,A5]),Score is -100,!.	%If "Game" is a losing move, Score is minimum
+eval(Score,[A1,A2,A3,A4,A5,_,_]):-win([A1,A2,A3,A4,A5]),Score is 100,!. %If "Game" is a winning move, Score is maximum
+eval(Score,[A1,A2,A3,A4,A5,_,_]):-lose([A1,A2,A3,A4,A5]),Score is -100,!. %If "Game" is a losing move, Score is minimum
 eval(Score,[A1,A2,A3,A4,A5,_,_]):-win([A1,A2,A3,A4,A5]),Score is 100,!. %If "Game" is a winning move, Score is maximum
 eval(Score,[A1,A2,A3,A4,A5,_,_]):-lose([A1,A2,A3,A4,A5]),Score is -100,!. %If "Game" is a losing move, Score is minimum
 eval(Score,[A1,A2,A3,A4,A5,_,_]):-count([A1,A2,A3,A4,A5],MT,1,2),count([A1,A2,A3,A4,A5],HT,2,2),Score is MT*10-HT*10.
