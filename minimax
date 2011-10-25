@@ -17,27 +17,76 @@ write('Select your player (x or o) : '),read(Pl),
 )
 .
 
-playerTurn([GB1,GB2,GB3,GB4,GB5], [GA1,GA2,GA3,GA4,GA5], PositionBefore, PositionAfter, Player):-
+playerTurn([GB1,GB2,GB3,GB4,GB5], [GA1,GA2,GA3,GA4,GA5], Position, Player):-
 
 write('\r\nSelect a case : '),read(Ca),
 
-(((PositionBefore == 1),(GA1 is Player+((Ca-1)*10)));(not(PositionBefore == 1),(GA1 is GB1))),
-(((PositionBefore == 2),(GA2 is Player+((Ca-1)*10)));(not(PositionBefore == 2),(GA2 is GB2))),
-(((PositionBefore == 3),(GA3 is Player+((Ca-1)*10)));(not(PositionBefore == 3),(GA3 is GB3))),
-(((PositionBefore == 4),(GA4 is Player+((Ca-1)*10)));(not(PositionBefore == 4),(GA4 is GB4))),
-(((PositionBefore == 5),(GA5 is Player+((Ca-1)*10)));(not(PositionBefore == 5),(GA5 is GB5))),
+%((Position < 6);(Position is 2)), % A remplacer par la suite
+
+% Erreur ici !!
+(
+  (Position < 6);
+  (
+    (
+      (Position == 6), (Position is 1) 
+    );
+    (
+      (Position == 7), (Position is 2) 
+    );
+    (
+      (Position == 8), (Position is 3) 
+    )
+  )
+),
+Player2 is (Player mod 2) + 1,
+
+(
+  (
+    (Position < 5),(NewPosition is Position + 1)
+  );
+  (
+    (
+      (Position == 5), (NewPosition is 1) 
+    );
+    (
+      (Position == 6), (NewPosition is 2) 
+    );
+    (
+      (Position == 7), (NewPosition is 3) 
+    )
+  )
+),
+
+(
+  (
+    (Position < 4),(NewPosition2 is Position + 2)
+  );
+  (
+    (
+      (Position == 4), (NewPosition2 is 1) 
+    );
+    (
+      (Position == 5), (NewPosition2 is 2) 
+    );
+    (
+      (Position == 6), (NewPosition2 is 3) 
+    )
+  )
+),
+
+(((Position == 1),(GA1 is Player+((Ca-1)*10)));(not(Position == 1),(GA1 is GB1))),
+(((Position == 2),(GA2 is Player+((Ca-1)*10)));(not(Position == 2),(GA2 is GB2))),
+(((Position == 3),(GA3 is Player+((Ca-1)*10)));(not(Position == 3),(GA3 is GB3))),
+(((Position == 4),(GA4 is Player+((Ca-1)*10)));(not(Position == 4),(GA4 is GB4))),
+(((Position == 5),(GA5 is Player+((Ca-1)*10)));(not(Position == 5),(GA5 is GB5))),
+
 affichage([GA1,GA2,GA3,GA4,GA5,1,1]),
 
 write('\r\nComputer is playing'),
-PositionAfter is PositionBefore + 1,
-((PositionAfter < 6);(PositionAfter is 1)),
-Player2 is (Player mod 2) + 1,
-choice([GA1,GA2,GA3,GA4,GA5,Player2,PositionAfter + 2],[S1,S2,S3,S4,S5,S6,S7],PositionAfter + 2),affichage([S1,S2,S3,S4,S5,S6,S7]), % erreur sur PositionAfter + 2
-NewPositionBefore is PositionBefore + 1,
-NewPositionAfter is PositionAfter + 1,
-((NewPositionBefore < 6);(NewPositionBefore is 1)),
-((NewPositionAfter < 6);(NewPositionAfter is 1)),
-playerTurn([S1,S2,S3,S4,S5],[G1,G2,G3,G4,G5],NewPositionBefore,NewPositionAfter,Player).
+
+choice([GA1,GA2,GA3,GA4,GA5,Player2,NewPosition],[S1,S2,S3,S4,S5,S6,S7],NewPosition),affichage([S1,S2,S3,S4,S5,S6,S7]),
+
+playerTurn([S1,S2,S3,S4,S5],[G1,G2,G3,G4,G5],NewPosition2,Player).
 
 
 game:-write('Hello ! Welcome at Gomoku !\r\n'),
@@ -45,7 +94,7 @@ game:-write('Hello ! Welcome at Gomoku !\r\n'),
   (selectPlayer(x),write('You are player X'),(Player is 1));
   (write('You are player O'),(Player is 2))
 ),
-playerTurn([0,0,0,0,0],[GA1,GA2,GA3,GA4,GA5],1,2,Player),!.
+playerTurn([0,0,0,0,0],[GA1,GA2,GA3,GA4,GA5],1,Player),!.
 
 %------------------------------------------------------------------------------------
 %Rules defining minimum/maximum of a number-list :
