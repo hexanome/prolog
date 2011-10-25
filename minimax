@@ -2,6 +2,37 @@
 
 % Game interface
 
+membre(X,[X|_]).
+membre(X,[_|L]) :- membre(X,L).
+
+% Permet de reperer s'il y a trois piont alignés
+gagne(Jeux,P):-
+((Piece1 is P),
+(Piece2 is (P + 10)),
+(Piece3 is (P + 20)),
+(Piece4 is (P + 30)),
+(Piece5 is (P + 40)),
+(Piece6 is (P + 50)),
+(Piece7 is (P + 60)),
+(Piece8 is (P + 70)),
+(Piece9 is (P + 80))),
+
+(
+  % ligne horizontale
+  (membre(Piece1,Jeux),membre(Piece2,Jeux),membre(Piece3,Jeux));
+  (membre(Piece4,Jeux),membre(Piece5,Jeux),membre(Piece6,Jeux));
+  (membre(Piece7,Jeux),membre(Piece8,Jeux),membre(Piece9,Jeux));
+
+  % ligne verticale
+  (membre(Piece1,Jeux),membre(Piece4,Jeux),membre(Piece7,Jeux));
+  (membre(Piece2,Jeux),membre(Piece5,Jeux),membre(Piece8,Jeux));
+  (membre(Piece3,Jeux),membre(Piece6,Jeux),membre(Piece9,Jeux));
+
+  % diagonale
+  (membre(Piece1,Jeux),membre(Piece5,Jeux),membre(Piece9,Jeux));
+  (membre(Piece3,Jeux),membre(Piece5,Jeux),membre(Piece7,Jeux))
+).
+
 selectPlayer(Player):-
 write('Select your player (x or o) : '),read(Pl),
 (
@@ -19,11 +50,8 @@ write('Select your player (x or o) : '),read(Pl),
 
 playerTurn([GB1,GB2,GB3,GB4,GB5], [GA1,GA2,GA3,GA4,GA5], Position, Player):-
 
-write('\r\nSelect a case : '),read(Ca),
+write('\r\nSelect a square : '),read(Ca),
 
-%((Position < 6);(Position is 2)), % A remplacer par la suite
-
-% Erreur ici !!
 (
   (Position < 6);
   (
@@ -82,18 +110,34 @@ Player2 is (Player mod 2) + 1,
 
 affichage([GA1,GA2,GA3,GA4,GA5,1,1]),
 
+(
+  (
+    gagne([GA1,GA2,GA3,GA4,GA5],Player),write('\r\nYou are the winner !!\r\n\r\n'),game
+  );
+  not(gagne([GA1,GA2,GA3,GA4,GA5],Player))
+),
+
+
 write('\r\nComputer is playing'),
 
 choice([GA1,GA2,GA3,GA4,GA5,Player2,NewPosition],[S1,S2,S3,S4,S5,S6,S7],NewPosition),affichage([S1,S2,S3,S4,S5,S6,S7]),
 
+(
+  (
+    gagne([S1,S2,S3,S4,S5,S6,S7],Player2),write('\r\nThe computer is the winner !!\r\n\r\n'),game
+  );
+  not(gagne([S1,S2,S3,S4,S5,S6,S7],Player2))
+),
+
 playerTurn([S1,S2,S3,S4,S5],[G1,G2,G3,G4,G5],NewPosition2,Player).
 
 
-game:-write('Hello ! Welcome at Gomoku !\r\n'),
+game:-write('Hello !\r\nWelcome at Morpion !\r\n'),
 (
   (selectPlayer(x),write('You are player X'),(Player is 1));
   (write('You are player O'),(Player is 2))
 ),
+write('\r\nGrid : \r\n1|2|3\r\n- - -\r\n4|5|6\r\n- - -\r\n7|8|9'),
 playerTurn([0,0,0,0,0],[GA1,GA2,GA3,GA4,GA5],1,Player),!.
 
 %------------------------------------------------------------------------------------
@@ -290,6 +334,8 @@ R5 is L5 mod 10,
 ((piece(R4,Piece4), position(P4,Piece4,A1,A2,A3,A4,A5,A6,A7,A8,A9));(L4 == 0)),
 ((piece(R5,Piece5), position(P5,Piece5,A1,A2,A3,A4,A5,A6,A7,A8,A9));(L5 == 0)),
 
+write('\r\n'),
 put(A1), write('|'), put(A2), write('|'), put(A3), write('\r\n- - -\r\n'), put(A4),
 write('|'), put(A5), write('|'),
-put(A6), write('\r\n- - -\r\n'), put(A7), write('|'), put(A8), write('|'), put(A9),!.
+put(A6), write('\r\n- - -\r\n'), put(A7), write('|'), put(A8), write('|'), put(A9),
+write('\r\n'),!.
