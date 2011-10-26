@@ -120,7 +120,7 @@ affichage([GA1,GA2,GA3,GA4,GA5,1,1]),
 
 write('\r\nComputer is playing'),
 
-choice([GA1,GA2,GA3,GA4,GA5,Player2,NewPosition],[S1,S2,S3,S4,S5,S6,S7],NewPosition),affichage([S1,S2,S3,S4,S5,S6,S7]),
+choice([GA1,GA2,GA3,GA4,GA5,Player2,NewPosition],[S1,S2,S3,S4,S5,S6,S7],73)4),affichage([S1,S2,S3,S4,S5,S6,S7]),
 
 (
   (
