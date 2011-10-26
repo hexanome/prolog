@@ -4,7 +4,7 @@ by alexis : github.com/alexisjos & raph github.com/rcatolino
 
 ##contents 
 * minimax algorithm, working with even depths.
-* game display method
+* game display methods
 * game eval function
 *	the logical smurf
 * player's move function
