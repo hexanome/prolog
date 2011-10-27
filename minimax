@@ -33,6 +33,115 @@ gagne(Jeux,P):-
   (membre(Piece3,Jeux),membre(Piece5,Jeux),membre(Piece7,Jeux))
 ).
 
+selectCase([G1,G2,G3,G4,G5],Cb):-
+write('\r\nSelect a square : '),read(Ca),
+
+(
+  (
+    not(G1 == 0),
+    R1 is ((G1 // 10) + 1)
+  );
+  (
+    (G1 == 0),
+    R1 is 3540
+  )
+),
+(
+  (
+    not(G1 == 0),
+    R1 is ((G1 // 10) + 1)
+  );
+  (
+    (G1 == 0),
+    R1 is 3540
+  )
+),
+(
+  (
+    not(G1 == 0),
+    R1 is ((G1 // 10) + 1)
+  );
+  (
+    (G1 == 0),
+    R1 is 3540
+  )
+),
+(
+  (
+    not(G1 == 0),
+    R1 is ((G1 // 10) + 1)
+  );
+  (
+    (G1 == 0),
+    R1 is 3540
+  )
+),
+(
+  (
+    not(G1 == 0),
+    R1 is ((G1 // 10) + 1)
+  );
+  (
+    (G1 == 0),
+    R1 is 3540
+  )
+),
+(
+  (
+    not(R1 == Ca),
+    not(R2 == Ca),
+    not(R3 == Ca),
+    not(R4 == Ca),
+    not(R5 == Ca),
+    (
+      (Ca == 1);
+      (Ca == 2);
+      (Ca == 3);
+      (Ca == 4);
+      (Ca == 5);
+      (Ca == 6);
+      (Ca == 7);
+      (Ca == 8);
+      (Ca == 9)
+    ),
+    (Cb is Ca)
+  );
+  (
+    (
+      (
+        (R1 == Ca);
+        (R2 == Ca);
+        (R3 == Ca);
+        (R4 == Ca);
+        (R5 == Ca)
+      ),
+      (
+        (Ca == 1);
+        (Ca == 2);
+        (Ca == 3);
+        (Ca == 4);
+        (Ca == 5);
+        (Ca == 6);
+        (Ca == 7);
+        (Ca == 8);
+        (Ca == 9)
+      )
+    ),
+    write('\r\nThere is already something on the square '),
+    write(Ca),
+    write(', please choose another one'),
+    selectCase([G1,G2,G3,G4,G5],Cb)
+  );
+  (
+    write('\r\nIncorect square '),
+    write(Ca),
+    write(', please choose another one'),
+    selectCase([G1,G2,G3,G4,G5],Cb)
+  )
+)
+,!
+.
+
 selectPlayer(Player):-
 write('Select your player (x or o) : '),read(Pl),
 (
@@ -50,7 +159,7 @@ write('Select your player (x or o) : '),read(Pl),
 
 playerTurn([GB1,GB2,GB3,GB4,GB5], [GA1,GA2,GA3,GA4,GA5], Position, Player):-
 
-write('\r\nSelect a square : '),read(Ca),
+selectCase([GB1,GB2,GB3,GB4,GB5],Ca), % enlever position
 
 (
   (Position < 6);
@@ -120,7 +229,7 @@ affichage([GA1,GA2,GA3,GA4,GA5,1,1]),
 
 write('\r\nComputer is playing'),
 
-choice([GA1,GA2,GA3,GA4,GA5,Player2,NewPosition],[S1,S2,S3,S4,S5,S6,S7],73)4),affichage([S1,S2,S3,S4,S5,S6,S7]),
+choice([GA1,GA2,GA3,GA4,GA5,Player2,NewPosition],[S1,S2,S3,S4,S5,S6,S7],4),affichage([S1,S2,S3,S4,S5,S6,S7]),
 
 (
   (
